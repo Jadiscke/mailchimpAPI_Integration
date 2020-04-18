@@ -3,6 +3,7 @@
 const express = require('express');
 const app = express();
 const https = require('https');
+const fs = require('fs');
 
 app.use(express.urlencoded({extended: true}));
 
@@ -37,13 +38,17 @@ app.post('/', (req,res) => {
   const jsonData = JSON.stringify(data);
   var mailChimpData = '';
   var statusCode = 0;
-
+  var arrAuth = [];
   //Setting API response
-  const url = 'https://us4.api.mailchimp.com/3.0/lists/fe6cb01234';
+  //load API Authentication
+  var dataFile  = fs.readFileSync(__dirname+'/apikeys.txt','utf8');
+
+  arrAuth = dataFile.split(/[\r\n]+/);
+  const url = arrAuth[0];
 
   const options = {
     method: 'POST',
-    auth: 'jadiscke1:ab30a714f60c3e338efc4005512be4fe-us4'
+    auth: arrAuth[1]
   }
 
   const request = https.request(url,options, function(response){
